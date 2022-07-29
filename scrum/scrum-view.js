@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Table from '../../coreView/common/table';
-import ListBuilder from '../../coreView/common/list-builder';
-import Modal from '../../coreView/common/modal';
+import Table from '../../../coreView/common/table';
+import ListBuilder from '../../../coreView/common/list-builder';
+import Modal from '../../../coreView/common/modal';
 
 
 export default function PMScrumView({itemState, appPrefs, onListLimitChange,

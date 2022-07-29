@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import FormBuilder from '../../coreView/common/form-builder';
+import FormBuilder from '../../../coreView/common/form-builder';
 
 export default function PMScrumModifyView({containerState, item, inputFields, appPrefs, 
 	itemPrefForms, onSave, onCancel, inputChange, onBlur}) {

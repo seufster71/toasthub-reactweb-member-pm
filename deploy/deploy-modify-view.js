@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import FormBuilder from '../../coreView/common/form-builder';
+import FormBuilder from '../../../coreView/common/form-builder';
 
 export default function PMDeployModifyView({itemState, appPrefs, 
 	onSave, onCancel, inputChange, onBlur, onClick}) {
