@@ -74,6 +74,7 @@ export default function PMWorkflowStepView({itemState, appPrefs, onListLimitChan
 	    			onOrderBy={onOrderBy}
 	    			onOption={onOption}
 	    			orderCriteria={itemState.orderCriteria}
+	    			moveSelectedItem={itemState.moveSelectedItem}
 	    			moveHeader={moveHeader}
 	    		/>
     		)}
