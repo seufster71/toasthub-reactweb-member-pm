@@ -15,12 +15,12 @@ export default function PMReleaseView({itemState, appPrefs, onListLimitChange,
     }
     let group = "TABLE1";
     
-    let header = "";
     let parent = "";
     if (itemState.parent != null) {
 		parent = itemState.parent.name;
     }
     
+    let header = "";
 	if (itemState.prefTexts.PM_RELEASE_PAGE != null && itemState.prefTexts.PM_RELEASE_PAGE.PM_RELEASE_PAGE_HEADER != null) {
 		header = itemState.prefTexts.PM_RELEASE_PAGE.PM_RELEASE_PAGE_HEADER.value;
 	}

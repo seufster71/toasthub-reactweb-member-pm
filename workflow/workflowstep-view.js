@@ -31,7 +31,7 @@ export default function PMWorkflowStepView({itemState, appPrefs, onListLimitChan
 	}
 	
 	if (goBack != null && parent != null && parent != "") {
-		header = <span>{header} : <a onClick={() => goBack()} aria-hidden="true">{parent}</a></span>;
+		header = <span><a href="#" onClick={() => goBack()} aria-hidden="true">{parent}</a> {'>'} {header}</span>;
 	}
 	
 	let deleteModalHeader = "Delete ";

@@ -5,24 +5,38 @@ import ListBuilder from '../../../coreView/common/list-builder';
 import Modal from '../../../coreView/common/modal';
 
 
-export default function PMTestScenarioView({containerState, itemState, appPrefs, onListLimitChange,
-	onSearchChange, onSearchClick, onPaginationClick, onOrderBy, openDeleteModal, 
-	closeModal, onModify, onDelete, onEditRoles, inputChange, session}) {
+export default function PMTestScriptView({itemState, appPrefs, onListLimitChange,
+	onSearchChange, onSearchClick, onPaginationClick, onOrderBy, onOption,
+	closeModal, inputChange, goBack, session}) {
 
     let columns = [];
-    if (itemState.prefLabels != null && itemState.prefLabels.PM_TESTSCENARIO_PAGE != null) {
-    	columns = itemState.prefLabels.PM_TESTSCENARIO_PAGE;
+    if (itemState.prefLabels != null && itemState.prefLabels.PM_TESTSCRIPT_PAGE != null) {
+    	columns = itemState.prefLabels.PM_TESTSCRIPT_PAGE;
     }
     let group = "TABLE1";
     
+    let parent = "";
+    if (itemState.parent != null) {
+		parent = itemState.parent.name;
+    }
+    
     let header = "";
-	if (itemState.prefTexts.PM_TESTSCENARIO_PAGE != null && itemState.prefTexts.PM_TESTSCENARIO_PAGE.PM_TESTSCENARIO_PAGE_HEADER != null) {
-		header = itemState.prefTexts.PM_TESTSCENARIO_PAGE.PM_TESTSCENARIO_PAGE_HEADER.value;
+	if (itemState.prefTexts.PM_TESTSCRIPT_PAGE != null && itemState.prefTexts.PM_TESTSCRIPT_PAGE.PM_TESTSCRIPT_PAGE_HEADER != null) {
+		header = itemState.prefTexts.PM_TESTSCRIPT_PAGE.PM_TESTSCRIPT_PAGE_HEADER.value;
+	}
+	
+	let moveHeader = "";
+	if (itemState.moveSelectedItem != null) {
+		moveHeader = "Moving:" + itemState.moveSelectedItem.name;
+	}
+	
+	if (goBack != null && parent != null && parent != "") {
+		header = <span><a href="#" onClick={() => goBack()} aria-hidden="true">{parent}</a> {'>'} {header}</span>;
 	}
 	
 	let deleteModalHeader = "Delete ";
-	if (containerState.selected != null && containerState.selected.name != null) {
-		deleteModalHeader += containerState.selected.name;
+	if (itemState.selected != null && itemState.selected.name != null) {
+		deleteModalHeader += itemState.selected.name;
 	}
 	
 	let viewPortSmall = false;
@@ -32,12 +46,9 @@ export default function PMTestScenarioView({containerState, itemState, appPrefs,
     	<div>
     		{viewPortSmall ? (
     			<ListBuilder
-		  	      	containerState={containerState}
+		  	      	itemState={itemState}
 		  	      	header={header}
-		  	      	items={itemState.items}
-		  	      	itemCount={itemState.itemCount}
-		  	      	listStart={itemState.listStart}
-		  	      	listLimit={itemState.listLimit}
+    				parent={parent}
 		  	     	columns={columns}
 		  	      	appPrefs={appPrefs}
 		  	      	onListLimitChange={onListLimitChange}
@@ -45,38 +56,29 @@ export default function PMTestScenarioView({containerState, itemState, appPrefs,
 		  	      	onSearchClick={onSearchClick}
 		  	      	onPaginationClick={onPaginationClick}
 		  			onOrderBy={onOrderBy}
-	  				onHeader={onModify}
-	  				onOption1={onModify}
-	  				onOption2={openDeleteModal}
-	  				onOption3={onEditRoles}
-		  			orderCriteria={itemState.orderCriteria}
-	  				searchCriteria={itemState.searchCriteria}
+	  				onOption={onOption}
+	  				moveSelectedItem={itemState.moveSelectedItem}
 		  	      />
     		) : (
 	    		<Table
-	    			containerState={containerState}
+	    			itemState={itemState}
 	    			header={header}
-	    			items={itemState.items}
-	    			itemCount={itemState.itemCount}
-	    			listStart={itemState.listStart}
-	    			listLimit={itemState.listLimit}
+	    			parent={parent}
 	    			columns={columns}
-	    			labelGroup = {group}
+	    			labelGroup={group}
 	    			appPrefs={appPrefs}
 	    			onListLimitChange={onListLimitChange}
 	    			onSearchChange={onSearchChange}
 	    			onSearchClick={onSearchClick}
 	    			onPaginationClick={onPaginationClick}
 	    			onOrderBy={onOrderBy}
-	    			onHeader={onModify}
-	    			onOption1={onModify}
-	    			onOption2={openDeleteModal}
-	    			onOption3={onEditRoles}
+	    			onOption={onOption}
 	    			orderCriteria={itemState.orderCriteria}
-					searchCriteria={itemState.searchCriteria}
+	    			moveSelectedItem={itemState.moveSelectedItem}
+	    			moveHeader={moveHeader}
 	    		/>
     		)}
-    		<Modal isOpen={containerState.isDeleteModalOpen} onClose={closeModal()} >
+    		<Modal isOpen={itemState.isDeleteModalOpen} onClose={() => closeModal()} >
     			<div className="modal-dialog">
     				<div className="modal-content">
     					<div className="modal-header">
@@ -87,8 +89,8 @@ export default function PMTestScenarioView({containerState, itemState, appPrefs,
     						<h3>Are you sure you want to delete?</h3>
     					</div>
     					<div className="modal-footer">
-    						<button type="button" className="btn btn-primary" onClick={onDelete(containerState.selected)}>Delete</button>
-    						<button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={closeModal()}>Close</button>
+    						<button type="button" className="btn btn-primary" onClick={() => onOption("DELETEFINAL",itemState.selected)}>Delete</button>
+    						<button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={() => closeModal()}>Close</button>
     					</div>
     				</div>
     			</div>
@@ -98,9 +100,8 @@ export default function PMTestScenarioView({containerState, itemState, appPrefs,
 }
 
 
-PMTestScenarioView.propTypes = {
-  containerState: PropTypes.object,
-  itemState: PropTypes.object,
+PMTestScriptView.propTypes = {
+  itemState: PropTypes.object.isRequired,
   appPrefs: PropTypes.object,
   onListLimitChange: PropTypes.func,
   onSearchChange: PropTypes.func,
@@ -109,9 +110,8 @@ PMTestScenarioView.propTypes = {
   onOrderBy: PropTypes.func, 
   openDeleteModal: PropTypes.func,
   closeModal: PropTypes.func,
-  onModify: PropTypes.func,
-  onDelete: PropTypes.func,
-  onEditRoles: PropTypes.func,
+  onOption: PropTypes.func,
   inputChange: PropTypes.func,
+  goBack: PropTypes.func,
   session: PropTypes.object
 };

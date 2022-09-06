@@ -5,9 +5,9 @@ import ListBuilder from '../../../coreView/common/list-builder';
 import Modal from '../../../coreView/common/modal';
 
 
-export default function PMTestCaseView({containerState, itemState, appPrefs, onListLimitChange,
-	onSearchChange, onSearchClick, onPaginationClick, onOrderBy, openDeleteModal, 
-	closeModal, onModify, onDelete, onEditRoles, inputChange, session}) {
+export default function PMTestCaseView({itemState, appPrefs, onListLimitChange,
+	onSearchChange, onSearchClick, onPaginationClick, onOrderBy, onOption,
+	closeModal, inputChange, goBack, session}) {
 
     let columns = [];
     if (itemState.prefLabels != null && itemState.prefLabels.PM_TESTCASE_PAGE != null) {
@@ -15,14 +15,23 @@ export default function PMTestCaseView({containerState, itemState, appPrefs, onL
     }
     let group = "TABLE1";
     
+    let parent = "";
+    if (itemState.parent != null) {
+		parent = itemState.parent.name;
+    }
+    
     let header = "";
 	if (itemState.prefTexts.PM_TESTCASE_PAGE != null && itemState.prefTexts.PM_TESTCASE_PAGE.PM_TESTCASE_PAGE_HEADER != null) {
 		header = itemState.prefTexts.PM_TESTCASE_PAGE.PM_TESTCASE_PAGE_HEADER.value;
 	}
 	
+	if (goBack != null && parent != null && parent != "") {
+		header = <span><a href="#" onClick={() => goBack()} aria-hidden="true">{parent}</a> {'>'} {header}</span>;
+	}
+	
 	let deleteModalHeader = "Delete ";
-	if (containerState.selected != null && containerState.selected.name != null) {
-		deleteModalHeader += containerState.selected.name;
+	if (itemState.selected != null && itemState.selected.name != null) {
+		deleteModalHeader += itemState.selected.name;
 	}
 	
 	let viewPortSmall = false;
@@ -32,12 +41,9 @@ export default function PMTestCaseView({containerState, itemState, appPrefs, onL
     	<div>
     		{viewPortSmall ? (
     			<ListBuilder
-		  	      	containerState={containerState}
+		  	      	itemState={itemState}
 		  	      	header={header}
-		  	      	items={itemState.items}
-		  	      	itemCount={itemState.itemCount}
-		  	      	listStart={itemState.listStart}
-		  	      	listLimit={itemState.listLimit}
+    				parent={parent}
 		  	     	columns={columns}
 		  	      	appPrefs={appPrefs}
 		  	      	onListLimitChange={onListLimitChange}
@@ -45,21 +51,13 @@ export default function PMTestCaseView({containerState, itemState, appPrefs, onL
 		  	      	onSearchClick={onSearchClick}
 		  	      	onPaginationClick={onPaginationClick}
 		  			onOrderBy={onOrderBy}
-	  				onHeader={onModify}
-	  				onOption1={onModify}
-	  				onOption2={openDeleteModal}
-	  				onOption3={onEditRoles}
-		  			orderCriteria={itemState.orderCriteria}
-	  				searchCriteria={itemState.searchCriteria}
+	  				onOptions={onOption}
 		  	      />
     		) : (
 	    		<Table
-	    			containerState={containerState}
+	    			itemState={itemState}
 	    			header={header}
-	    			items={itemState.items}
-	    			itemCount={itemState.itemCount}
-	    			listStart={itemState.listStart}
-	    			listLimit={itemState.listLimit}
+	    			parent={parent}
 	    			columns={columns}
 	    			labelGroup = {group}
 	    			appPrefs={appPrefs}
@@ -68,15 +66,10 @@ export default function PMTestCaseView({containerState, itemState, appPrefs, onL
 	    			onSearchClick={onSearchClick}
 	    			onPaginationClick={onPaginationClick}
 	    			onOrderBy={onOrderBy}
-	    			onHeader={onModify}
-	    			onOption1={onModify}
-	    			onOption2={openDeleteModal}
-	    			onOption3={onEditRoles}
-	    			orderCriteria={itemState.orderCriteria}
-					searchCriteria={itemState.searchCriteria}
+	    			onOption={onOption}
 	    		/>
     		)}
-    		<Modal isOpen={containerState.isDeleteModalOpen} onClose={closeModal()} >
+    		<Modal isOpen={itemState.isDeleteModalOpen} onClose={() => closeModal()} >
     			<div className="modal-dialog">
     				<div className="modal-content">
     					<div className="modal-header">
@@ -87,8 +80,8 @@ export default function PMTestCaseView({containerState, itemState, appPrefs, onL
     						<h3>Are you sure you want to delete?</h3>
     					</div>
     					<div className="modal-footer">
-    						<button type="button" className="btn btn-primary" onClick={onDelete(containerState.selected)}>Delete</button>
-    						<button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={closeModal()}>Close</button>
+    						<button type="button" className="btn btn-primary" onClick={() => onOption("DELETEFINAL",itemState.selected)}>Delete</button>
+    						<button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={() => closeModal()}>Close</button>
     					</div>
     				</div>
     			</div>

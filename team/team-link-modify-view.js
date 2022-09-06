@@ -5,7 +5,7 @@ import FormBuilder from '../../../coreView/common/form-builder';
 export default function PMTeamLinkModifyView({itemState, appPrefs, onSave, onCancel, inputChange}) {
     
 	let formName = "PM_TEAM_PRODUCT_FORM";
-	let formTitle = "Team Product";
+	let formTitle = "Team Link";
 	let formGroup = "FORM1";
 
     return (
